@@ -1,67 +1,71 @@
 <template>
   <div id="app">
-    <header>
-      <div class="header">My personal costs</div>
+    <header class="link">
+      <router-link to="/dashboard">dashboard</router-link>
+      <router-link to="/about">about</router-link>
+      <div @click="goToPage('NotFound')">404</div>
     </header>
     <main>
-      <add-payment-form
-        @addNewPayment="addNewPayment"
-        :categoryList="getCategoryList"
-      />
-      <button @click="show = !show">ADD NEW COST+</button>
-      <PaymentsDisplay v-show="show" show-items :items="curentElements" />
-      <pagination
-        :cur="page"
-        :n="n"
-        :length="getPaymentsList.length"
-        @paginate="changePage"
-      />
+      <router-view></router-view>
     </main>
+    <transition name="fade">
+      <modal-window-add-payment v-if="modalIsShow" :settings="modalSettings" />
+    </transition>
   </div>
 </template>
 
 <script>
-import PaymentsDisplay from "./components/PaymentsDisplay.vue";
-import AddPaymentForm from "./components/AddPaymentForm.vue";
-import Pagination from "./components/Pagination.vue";
-import { mapMutations, mapGetters } from "vuex";
+//import ModalWindowAddPayment from "./components/ModalWindowAddPayment.vue";
 export default {
   name: "App",
   components: {
-    PaymentsDisplay,
-    AddPaymentForm,
-    Pagination,
+    ModalWindowAddPayment: () =>
+      import("./components/ModalWindowAddPayment.vue"),
   },
   data: () => ({
-    show: true,
-    page: 1,
-    n: 10,
+    modalSettings: {},
+    modalIsShow: false,
   }),
-  computed: {
-    ...mapGetters(["getPaymentsList", "getCategoryList"]),
-    paymentsList() {
-      return this.$store.getters.getPaymentsList;
+  computed: {},
+  methods: {
+    openPayment() {
+      this.modalIsShow = true;
+      this.modalSettings = {
+        title: "Add Payment Form",
+        content: "AddPaymentForm",
+      };
     },
-    curentElements() {
-      const { n, page } = this;
-      return this.paymentsList.slice(n * (page - 1), n * (page - 1) + n);
+    openAuth() {
+      this.modalIsShow = true;
+      this.modalSettings = {
+        title: "Auth",
+        content: "Auth",
+      };
+    },
+    goToPage(pageName) {
+      this.$router.push({
+        name: pageName,
+      });
+    },
+
+    onShown(settings) {
+      this.modalSettings = settings;
+      this.modalIsShow = true;
+    },
+    onHide() {
+      this.modalSettings = {};
+      this.modalIsShow = false;
     },
   },
-
-  methods: {
-    ...mapMutations(["setPaymentsListData", "setCategories"]),
-
-    addNewPayment(data) {
-      this.$store.commit("addDataToPaymentsList", data);
-    },
-    changePage(p) {
-      this.page = p;
-    },
+  mounted() {
+    this.$modal.EventBus.$on("onShown,", this.onShown);
+    this.$modal.EventBus.$on("onHide,", this.onHide);
   },
 
   created() {
     this.$store.dispatch("fetchData");
     this.$store.dispatch("fetchCategoryList");
+    console.log(this.$modal);
   },
 };
 </script>
@@ -76,6 +80,18 @@ export default {
   margin-top: 60px;
   .header {
     font-size: 28px;
+  }
+  .fade-enter-active,
+  .fade-leave-active {
+    transition: opacity 0.3s;
+  }
+  .fade-enter,
+  .fade-leave-to {
+    opacity: 0;
+  }
+  a {
+    padding-left: 10px;
+    padding-bottom: 10px;
   }
 }
 </style>

@@ -15,12 +15,7 @@
 <script>
 export default {
   name: "AddPaymentForm",
-  props: {
-    categoryList: {
-      type: Array,
-      default: () => [],
-    },
-  },
+
   data() {
     return {
       amount: "",
@@ -29,6 +24,9 @@ export default {
     };
   },
   computed: {
+    categoryList() {
+      return this.$store.getters.getCategoryList;
+    },
     getCurrentDate() {
       const today = new Date();
       const d = today.getDate();
@@ -44,8 +42,14 @@ export default {
         type: this.type,
         date: this.date || this.getCurrentDate,
       };
-      this.$emit("addNewPayment", data);
+      this.addData(data);
     },
+    addData(data) {
+      this.$store.commit("addDataToPaymentsList", data);
+    },
+  },
+  created() {
+    this.category = this.$route.params.category;
   },
 };
 </script>
