@@ -25,7 +25,6 @@ export default {
   methods: {
     onCloseClick() {
       this.$modal.hide();
-      console.log("hide");
     },
   },
 };
@@ -56,3 +55,4 @@ export default {
   z-index: 100;
 }
 </style>
+
