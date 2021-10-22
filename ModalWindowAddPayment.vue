@@ -3,6 +3,7 @@
     <div class="overlay"></div>
     <div class="header">{{ settings.title }}</div>
     <div class="content">
+      <component :is="content" :data="data" />
       <add-payment-form v-if="settings.content === 'AddPaymentForm'" />
       <auth v-if="settings.content === 'Auth'" />
       <div class="footer">
@@ -20,12 +21,13 @@ export default {
   name: "ModalWindowAddPayment",
   props: {
     content: String,
+    title: String,
     settings: Object,
+    data: Object,
   },
   methods: {
     onCloseClick() {
       this.$modal.hide();
-      console.log("hide");
     },
   },
 };

@@ -1,7 +1,12 @@
 <template>
   <div>
     <div v-for="(item, idx) in items" :key="idx">
-      {{ item }}
+      <span>{{ item.id }}</span
+      >-<span>{{ item.category }}</span
+      >-<span>{{ item.date }}</span
+      >-<span>{{ item.value }}</span
+      >-<span>{{ item.amount }}</span
+      >-<span @click="addEdit">...</span>
     </div>
   </div>
 </template>
@@ -20,6 +25,14 @@ export default {
   },
   data() {
     return {};
+  },
+  methods: {
+    addEdit() {
+      this.$edit.showedit({
+        title: "Edit Window",
+        content: "EditWindow",
+      });
+    },
   },
 };
 </script>

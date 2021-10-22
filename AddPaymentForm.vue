@@ -15,6 +15,9 @@
 <script>
 export default {
   name: "AddPaymentForm",
+  props: {
+    data: Object,
+  },
 
   data() {
     return {
@@ -49,7 +52,11 @@ export default {
     },
   },
   created() {
-    this.category = this.$route.params.category;
+    if (this.data) {
+      const { amount, category } = this.data;
+      this.type = category || "";
+      this.amount = Number(amount) || 0;
+    }
   },
 };
 </script>
