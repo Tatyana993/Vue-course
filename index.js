@@ -1,36 +1,28 @@
-import Vue from "vue";
-import Router from "vue-router";
+export default {
+  install(Vue) {
+    if (this.installed) {
+      return;
+    }
+    this.installed = true;
+    this.caller = null;
 
-Vue.use(Router);
+    Vue.prototype.$edit = {
+      EventBus: new Vue(),
 
-const router = new Router({
-  mode: "history",
-  routes: [
-    {
-      path: "/dashboard",
-      name: "dashboard",
-      component: () => import("../views/Dashboard.vue"),
-    },
-    {
-      path: "/dashboard/:page",
-      name: "dashboard",
-      component: () => import("../views/Dashboard.vue"),
-    },
-    {
-      path: "/dashboard/:action/:section/:category",
-      name: "AddPaymentFromUrl",
-      component: () => import("../views/Dashboard.vue"),
-    },
-    {
-      path: "/about",
-      name: "about",
-      component: () => import("../views/About.vue"),
-    },
-    {
-      path: "/404",
-      name: "NotFound",
-      component: () => import("../views/NotFound.vue"),
-    },
-  ],
-});
-export default router;
+      showedit(event, items) {
+        const caller = event.target;
+        if (!caller !== this.caller) {
+          this.caller = caller;
+          this.EventBus.$emit("showedit", { items, event });
+        } else {
+          this.hideedit();
+        }
+        this.EventBus.$emit("shownEdit,");
+        console.log("showedit", { items });
+      },
+      hideedit() {
+        this.EventBus.$emit("hideEdit,");
+      },
+    };
+  },
+};

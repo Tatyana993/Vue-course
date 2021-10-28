@@ -6,7 +6,7 @@
       >-<span>{{ item.date }}</span
       >-<span>{{ item.value }}</span
       >-<span>{{ item.amount }}</span
-      >-<span @click="addEdit">...</span>
+      >-<span @click="addEdit($event, item)" class="contextevent">...</span>
     </div>
   </div>
 </template>
@@ -27,7 +27,7 @@ export default {
     return {};
   },
   methods: {
-    addEdit() {
+    addEdit(event, item) {
       this.$edit.showedit({
         title: "Edit Window",
         content: "EditWindow",
@@ -37,4 +37,8 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+.contextevent {
+  cursor: pointer;
+}
+</style>
